@@ -151,9 +151,6 @@ END;
 /*INSERCIÓN DE DATOS*/
 INSERT INTO TIPO_OPERACION_CONFIGURACION(DESCRIPCION) VALUES('MODIFICACION');
 INSERT INTO TIPO_OPERACION_CONFIGURACION(DESCRIPCION) VALUES('INSERCION');
-<<<<<<< HEAD
-INSERT INTO TIPO_OPERACION_CONFIGURACION(DESCRIPCION) VALUES('BAJA');
-=======
 INSERT INTO TIPO_OPERACION_CONFIGURACION(DESCRIPCION) VALUES('BAJA');
 
 /***********************************************************************************************/
@@ -180,4 +177,3 @@ INSERT INTO TIPO_OPERACION_EMPRESA (DESCRIPCION) VALUES('BAJA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
->>>>>>> produccion-walter
