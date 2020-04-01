@@ -151,4 +151,33 @@ END;
 /*INSERCIÓN DE DATOS*/
 INSERT INTO TIPO_OPERACION_CONFIGURACION(DESCRIPCION) VALUES('MODIFICACION');
 INSERT INTO TIPO_OPERACION_CONFIGURACION(DESCRIPCION) VALUES('INSERCION');
+<<<<<<< HEAD
 INSERT INTO TIPO_OPERACION_CONFIGURACION(DESCRIPCION) VALUES('BAJA');
+=======
+INSERT INTO TIPO_OPERACION_CONFIGURACION(DESCRIPCION) VALUES('BAJA');
+
+/***********************************************************************************************/
+
+/***********************************************************************************************/
+/*tabla tipo_operacion_empresa*/
+
+CREATE SEQUENCE TBL_TP_OPR_EMPR
+START WITH 1
+INCREMENT BY 1;
+
+/*TRIGGER PARA LA SECUENCIA*/
+CREATE OR REPLACE TRIGGER BI_TIPO_OPR_EMPRESA
+BEFORE INSERT ON TIPO_OPERACION_EMPRESA
+FOR EACH ROW
+BEGIN
+SELECT TBL_TP_OPR_EMPR.NEXTVAL INTO :NEW.TIPO_OPERACION_EMPRESA FROM DUAL;
+END;
+
+/*INSERCION DE DATOS*/
+INSERT INTO TIPO_OPERACION_EMPRESA (DESCRIPCION) VALUES('MODIFICACION');
+INSERT INTO TIPO_OPERACION_EMPRESA (DESCRIPCION) VALUES('INSERCION');
+INSERT INTO TIPO_OPERACION_EMPRESA (DESCRIPCION) VALUES('BAJA');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
+>>>>>>> produccion-walter
