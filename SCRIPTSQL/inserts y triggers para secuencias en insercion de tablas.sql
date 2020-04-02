@@ -331,3 +331,23 @@ INSERT INTO TIPO_TRR_BITACORA_LIBRETA (DESCRIPCION) VALUES('BAJA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*TABLA ESTATUS_USUARIO*/
+CREATE SEQUENCE SEQ_ESTATUS_USR
+START WITH 1
+INCREMENT BY 1;
+
+/*TIGRILLO*/
+CREATE OR REPLACE TRIGGER BI_ESTATUS_USUARIO
+BEFORE INSERT ON ESTATUS_USUARIO
+FOR EACH ROW
+BEGIN
+SELECT SEQ_ESTATUS_USR.NEXTVAL INTO :NEW.ID_ESTATUS_USUARIO FROM DUAL;
+END;
+
+/*UN usuario puede estar activo, inactivo, bloqueado*/
+INSERT INTO ESTATUS_USUARIO(NOMBRE) VALUES('ACTIVO');
+INSERT INTO ESTATUS_USUARIO(NOMBRE) VALUES('INACTIVO');
+INSERT INTO ESTATUS_USUARIO(NOMBRE) VALUES('BLOQUEADO');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
