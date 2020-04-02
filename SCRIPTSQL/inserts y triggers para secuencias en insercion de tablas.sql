@@ -209,3 +209,23 @@ INSERT INTO CAMPO_BITACORA_EMPRESA (NOMBRE_CAMPO) VALUES('ID_ESTATUS');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*TABLA ESTATUS EMPRESA*/
+/*CREAMOS LA SESCUENCIA*/
+CREATE SEQUENCE SEQ_TBL_ESTATUS_EMPRESA
+START WITH 1
+INCREMENT BY 1;
+/*TRIGGER PARA LA SECUENCIA*/
+CREATE OR REPLACE TRIGGER BI_ESTATUS_EMPRESA
+BEFORE INSERT ON ESTATUS_EMPRESA
+FOR EACH ROW
+BEGIN
+SELECT SEQ_TBL_ESTATUS_EMPRESA.NEXTVAL INTO :NEW.ID_ESTATUS_EMPRESA FROM DUAL;
+END;   
+
+/*INSERTANDO LOS DATOS*/
+INSERT INTO ESTATUS_EMPRESA (NOMBRE) VALUES('ACTIVA');
+INSERT INTO ESTATUS_EMPRESA (NOMBRE) VALUES('BLOQUEADA');
+INSERT INTO ESTATUS_EMPRESA (NOMBRE) VALUES('INACTIVA');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
