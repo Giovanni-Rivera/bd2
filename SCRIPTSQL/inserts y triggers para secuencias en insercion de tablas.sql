@@ -398,3 +398,26 @@ INSERT INTO MODULO(DESCRIPCION) VALUES('CONFIGURACION');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*tablas estatus_libreta*/
+/*secuencia*/
+CREATE SEQUENCE SEQ_ESTATUS_LIBRETA
+START WITH 1
+INCREMENT BY 1;
+
+/*TRIGGER PARA EL CAMPO AUTOINCREMENTABLE*/
+CREATE OR REPLACE TRIGGER BI_ESTATUS_LIBRETA
+BEFORE INSERT ON ESTATUS_LIBRETA
+FOR EACH ROW
+BEGIN
+SELECT SEQ_ESTATUS_LIBRETA.NEXTVAL INTO :NEW.ID_ESTATUS_LIBRETA FROM DUAL;
+END;
+
+/*INSERTS, ACÁ CONSIDERAMOS 3 ESTADOS, HABILITADA, DESHABILITADA O BLOQUEADA
+DESHABILITADA QUIERE DECIR QUE SE LE DIÓ DE BAJA A LA LIBRETA)
+*/
+INSERT INTO ESTATUS_LIBRETA(NOMBRE) VALUES('HABILITADA');
+INSERT INTO ESTATUS_LIBRETA(NOMBRE) VALUES('DESHABILITADA');
+INSERT INTO ESTATUS_LIBRETA(NOMBRE) VALUES('BLOQUEADA');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
