@@ -421,3 +421,23 @@ INSERT INTO ESTATUS_LIBRETA(NOMBRE) VALUES('BLOQUEADA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*tabla TP_TRANSACC_BITACORA_CLIENTE*/
+CREATE SEQUENCE TP_TRANSACC_BITACORA_CLIENTE1
+START WITH 1
+INCREMENT BY 1;
+
+/*TRIGGER PARA HACER EL CAMPO AUTOINCREMENTABLE*/
+CREATE OR REPLACE TRIGGER BI_TP_TRANSACC_BITCLIENTE
+BEFORE INSERT ON TP_TRANSACC_BITACORA_CLIENTE
+FOR EACH ROW
+BEGIN 
+SELECT TP_TRANSACC_BITACORA_CLIENTE1.NEXTVAL INTO :NEW.ID_TIPO_TRANSACCION FROM DUAL;
+END;
+
+/*INSERTS DE DATOS EN  LA TABLA*/
+INSERT INTO TP_TRANSACC_BITACORA_CLIENTE (DESCRIPCION) VALUES('MODIFICACION');
+INSERT INTO TP_TRANSACC_BITACORA_CLIENTE (DESCRIPCION) VALUES('INSERCION');
+INSERT INTO TP_TRANSACC_BITACORA_CLIENTE (DESCRIPCION) VALUES('BAJA');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
