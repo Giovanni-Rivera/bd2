@@ -288,4 +288,22 @@ INSERT INTO TIPO_OPERACION_USUARIO (DESCRIPCION) VALUES('BAJA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/**tabla pais*/
+CREATE SEQUENCE SEQ_TBL_PAIS
+START WITH 1
+INCREMENT BY 1;
 
+/*TRIGGER PARA LA SECUENCIA*/
+CREATE OR REPLACE TRIGGER BI_PAIS
+BEFORE INSERT ON PAIS
+FOR EACH ROW
+BEGIN
+SELECT SEQ_TBL_PAIS.NEXTVAL INTO :NEW.ID_PAIS FROM DUAL;
+END;
+
+/*INSERTANDO DATOS*/
+INSERT INTO PAIS(NOMBRE) VALUES('GUATEMALA');
+
+/***********************************************************************************************/
+
+/***********************************************************************************************/
