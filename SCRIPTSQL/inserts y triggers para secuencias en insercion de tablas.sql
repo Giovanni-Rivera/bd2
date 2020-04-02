@@ -351,3 +351,23 @@ INSERT INTO ESTATUS_USUARIO(NOMBRE) VALUES('BLOQUEADO');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*TIPO_GENERO*/
+
+CREATE SEQUENCE SEQ_TIPO_GENERO
+START WITH 1
+INCREMENT BY 1;
+
+/*TRIGGER PARA LA INSERCIÓN DEL CAMPO AUTOINCRENTABLE*/
+CREATE OR REPLACE TRIGGER BI_TP_GENERO
+BEFORE INSERT ON TIPO_GENERO
+FOR EACH ROW
+BEGIN
+SELECT SEQ_TIPO_GENERO.NEXTVAL INTO :NEW.TIPO_GENERO FROM DUAL;
+END;
+
+/*DE MOMENTO, SOLO SE CONSIDERA MASCULINO Y FEMENINO ÚNICAMENTE*/
+INSERT INTO TIPO_GENERO(DESCRIPCION) VALUES('MASCULINO');
+INSERT INTO TIPO_GENERO(DESCRIPCION) VALUES('FEMENINO');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
