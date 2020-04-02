@@ -474,17 +474,24 @@ INSERT INTO CAMPO_BITACORA_CLIENTE (NOMBRE_CAMPO) VALUES('IMAGEN_FIRMA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*tabla TIPO_TRANSACCION_BOVEDA*/
+/*secuencia*/
+CREATE SEQUENCE SEQ_TP_TRANSACCION_BOVEDA
+START WITH 1
+INCREMENT BY 1;
 
+/*Trigger para volver el campo de ID autoincrementable*/
+CREATE OR REPLACE TRIGGER BI_TPTRANSACC_BOVEDA
+BEFORE INSERT ON TIPO_TRANSACCION_BOVEDA
+FOR EACH ROW
+BEGIN
+SELECT SEQ_TP_TRANSACCION_BOVEDA.NEXTVAL INTO :NEW.TIPO_TRANSACCION FROM DUAL;
+END;
 
-
-
-
-
-
-
-
-
-
+/*INSERTS, tipos de transacciones que se pueden dar en una boveda, actualmente
+se tiene pensado únicamente retiro y depósito*/
+INSERT INTO TIPO_TRANSACCION_BOVEDA (DESCRIPCION) VALUES('RETIRO');
+INSERT INTO TIPO_TRANSACCION_BOVEDA (DESCRIPCION) VALUES('DEPÓSITO');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
