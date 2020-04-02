@@ -267,3 +267,25 @@ INSERT INTO CAMPO_BITACORA_USUARIO (NOMBRE_CAMPO) VALUES('ESTATUS_USUARIO');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*tabla tipo_operacion_usuario*/
+CREATE SEQUENCE SQL_TBL_TPOPR_USR
+START WITH 1
+INCREMENT BY 1;
+
+/*TIRGGER PARA EL CAMPO AUTOINCREMENTABLE*/
+CREATE OR REPLACE TRIGGER BI_TP_OPR_USR
+BEFORE INSERT ON TIPO_OPERACION_USUARIO
+FOR EACH ROW
+BEGIN
+SELECT SQL_TBL_TPOPR_USR.NEXTVAL INTO :NEW.TIPO_OPERACION FROM DUAL;
+END;
+
+/*INSERCION DE DATOS*/
+INSERT INTO TIPO_OPERACION_USUARIO (DESCRIPCION) VALUES('MODIFICACION');
+INSERT INTO TIPO_OPERACION_USUARIO (DESCRIPCION) VALUES('INSERCION');
+INSERT INTO TIPO_OPERACION_USUARIO (DESCRIPCION) VALUES('BAJA');
+
+/***********************************************************************************************/
+
+/***********************************************************************************************/
+
