@@ -588,5 +588,23 @@ INSERT INTO TIPO_BOLETA (NOMBRE) VALUES('RETIRO CUENTA DE AHORRO');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
-/*tabla */
+/*tabla ESTATUS_BOLETA*/
+CREATE SEQUENCE SEQ_ESTATUS_BOLETA
+START WITH 1
+INCREMENT BY 1;
 
+/*TRIGGER PARA CAMPO AUTOINCREMENTABLE*/
+CREATE OR REPLACE TRIGGER BI_ESTATUS_BOLETA
+BEFORE INSERT ON ESTATUS_BOLETA
+FOR EACH ROW
+BEGIN 
+SELECT SEQ_ESTATUS_BOLETA.NEXTVAL INTO :NEW.ID_ESTATUS_BOLETA FROM DUAL;
+END;
+
+/*UNA LIBRETA PUEDE ESTAR HABILITADA, DESHABILITADA O BLOEQUEADA*/
+INSERT INTO ESTATUS_BOLETA (NOMBRE) VALUES('HABILITADA');
+INSERT INTO ESTATUS_BOLETA (NOMBRE) VALUES('DESHABILITADA');
+INSERT INTO ESTATUS_BOLETA (NOMBRE) VALUES('BLOQUEADA');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
