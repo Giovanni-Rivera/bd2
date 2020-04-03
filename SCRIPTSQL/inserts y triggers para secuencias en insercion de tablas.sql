@@ -671,3 +671,22 @@ INSERT INTO ESTATUS_CHEQUE(NOMBRE) VALUES('BLOQUEADO');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*tabla tipo_transacccion_caja*/
+/*SECUENCIA*/
+CREATE SEQUENCE SEQ_TP_TRANSACCION_CAJA
+START WITH 1
+INCREMENT BY 1;
+
+/*TRIGGER*/
+CREATE OR REPLACE TRIGGER BI_TP_TRANSACCION_CAJA
+BEFORE INSERT ON TIPO_TRANSACCION_CAJA
+FOR EACH ROW
+BEGIN
+SELECT SEQ_TP_TRANSACCION_CAJA.NEXTVAL INTO :NEW.TIPO_TRANSACCION FROM DUAL;
+END;
+
+/*EN UNA CAJA, SE DA UN CAMBIO DE TURNO, DE MOMENTO SOLO ESTE VOY A INGRESAR*/
+INSERT INTO TIPO_TRANSACCION_CAJA (DESCRIPCION) VALUES('CAMBIO DE TURNO');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
