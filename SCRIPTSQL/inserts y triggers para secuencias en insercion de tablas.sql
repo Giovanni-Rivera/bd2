@@ -711,4 +711,24 @@ INSERT INTO TIPO_TRANSAC_BITACORA_CHEQ(DESCRIPCION) VALUES('BAJA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*TABLA ESTATUS_BOVEDA*/
+/*SECUENCIA*/
+CREATE SEQUENCE SEQ_ESTATUS_BOVEDA
+START WITH 1
+INCREMENT BY 1;
 
+/*TRIGGER*/
+CREATE OR REPLACE TRIGGER BI_ESTATUS_BOVEDA
+BEFORE INSERT ON ESTATUS_BOVEDA
+FOR EACH ROW
+BEGIN
+SELECT SEQ_ESTATUS_BOVEDA.NEXTVAL INTO :NEW.ID_ESTATUS_BOVEDA FROM DUAL;
+END;
+
+/*INSERCIÓN DE DATOS, UNA BOVEDA PUEDE ESTAR HABILITADA, DESHABILITADA O BLOQUEADA*/
+INSERT INTO ESTATUS_BOVEDA(NOMBRE) VALUES('HABILITADA');
+INSERT INTO ESTATUS_BOVEDA(NOMBRE) VALUES('DESHABILITADA');
+INSERT INTO ESTATUS_BOVEDA(NOMBRE) VALUES('BLOQUEADA');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
