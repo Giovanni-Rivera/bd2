@@ -752,3 +752,37 @@ INSERT INTO TIPO_TRANSACCION(NOMBRE) VALUES('RETIRO');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*tabla ESTADO_TRANSACCION_GEN*/
+/*OBSERVACIÓN IMPORTANTE, 
+al estar utilizando la versión de oracle 11g, no podemos hacer uso directo a que la columna de id 
+o llave primaria sea utoincrementable, por tal razón se realizó todo este proceso de la forma
+tradicial, tal cual lo hicimos en  secciones previas y la actual:
+fuente:
+https://www.oracle.com/technetwork/es/articles/sql/oracle-database-columna-identidad-2775883-esa.html
+*/
+/*secuencia*/
+CREATE SEQUENCE SEQ_ESTADO_TRANSACC_GEN
+START WITH 1
+INCREMENT BY 1;
+
+/*TRIGGER PARA LOGRAR QUE EL CAMPO ID SEA UTOINCREMENTABLE CADA VEZ QUE INSERTEMOS UN DATO 
+EN ESTA TABLA*/
+CREATE OR REPLACE TRIGGER BI_ESTADO_TRANSACC_GEN
+BEFORE INSERT ON ESTADO_TRANSACCION_GEN
+FOR EACH ROW
+BEGIN 
+SELECT SEQ_ESTADO_TRANSACC_GEN.NEXTVAL INTO :NEW.ID_ESTADO FROM DUAL;
+END;
+
+/*UNA TRANSACCION A NIVEL GENERAL DE LA BITACORA PRINCIPAL, 
+PUEDE ESTAR EN PROCESO, TERMINADA(ESTO QUIERE DECIR QUE SE APROBÓ CON ÉXITO), RECHAZADA,  PUES ALLÍ SOLO VAMOS A ESTAR REGISTRANDO LOS SALDOS ANTERIORES
+Y NUEVOS DE LAS CUENTAS, SEGÚN SEA LA OPERACIÓN EN QUE SE REALIZÓ  EL FLUJO DEL CAPITAL (DINERO) */
+INSERT INTO ESTADO_TRANSACCION_GEN (DESCRIPCION) VALUES('EN PROCESO');
+INSERT INTO ESTADO_TRANSACCION_GEN (DESCRIPCION) VALUES('TERMINADA');
+INSERT INTO ESTADO_TRANSACCION_GEN (DESCRIPCION) VALUES('RECHAZADA');
+/***********************************************************************************************/
+    ------------FINAL DE LOS PRINCIPALES TRIGGERS, SECUENCIAS Y DATOS NECESARIOS ----------------
+    ------------PREVIO A LA IMPLEMENTACION COMPLETA DE LA LÓGICA DEL NEGOCIO---------------------
+/***********************************************************************************************/
+
+
