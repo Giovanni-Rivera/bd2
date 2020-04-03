@@ -690,3 +690,25 @@ INSERT INTO TIPO_TRANSACCION_CAJA (DESCRIPCION) VALUES('CAMBIO DE TURNO');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*tabla TIPO_TRANSAC_BITACORA_CHEQ*/
+/*secuencia*/
+CREATE SEQUENCE SEQ_TPTRANSACBIT_CHEQ
+START WITH 1
+INCREMENT BY 1;
+
+/*TRIGGER*/
+CREATE OR REPLACE TRIGGER BI_TP_TRANSACBIT_CHEQ
+BEFORE INSERT ON TIPO_TRANSAC_BITACORA_CHEQ
+FOR EACH ROW
+BEGIN
+SELECT SEQ_TPTRANSACBIT_CHEQ.NEXTVAL INTO :NEW.ID_TIPO_TRANSACCION FROM DUAL;
+END;
+
+/*EN ESTA TABLA VAMOS A REGISTRAR 3 TIPOS DE OPERACION, MODIFICACION, INSERCION O BAJA DEL SISTEMA DE ALGUN CHEQUE*/
+INSERT INTO TIPO_TRANSAC_BITACORA_CHEQ(DESCRIPCION) VALUES('MODIFICACION');
+INSERT INTO TIPO_TRANSAC_BITACORA_CHEQ(DESCRIPCION) VALUES('INSERCION');
+INSERT INTO TIPO_TRANSAC_BITACORA_CHEQ(DESCRIPCION) VALUES('BAJA');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
+
