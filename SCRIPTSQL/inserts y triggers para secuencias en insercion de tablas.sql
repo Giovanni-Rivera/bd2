@@ -629,3 +629,24 @@ INSERT INTO ESTATUS_AGENCIA(DESCRIPCION) VALUES('BLOQUEADA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*TABLA ESTATUS_CAJA*/
+/*SECUENCIA*/
+CREATE SEQUENCE SEQ_ESTATUS_CAJA
+START WITH 1
+INCREMENT BY 1;
+
+/*TRIGGER*/
+CREATE OR REPLACE TRIGGER BI_ESTATUS_CAJA
+BEFORE INSERT ON ESTATUS_CAJA
+FOR EACH ROW
+BEGIN
+SELECT SEQ_ESTATUS_CAJA.NEXTVAL INTO :NEW.ID_ESTATUS_CAJA FROM DUAL;
+END;
+
+/*INSERCIÓN DE DATOS, UNA CAJA PUEDE ESTAR HABILITADA, DESHABILITADA O BLOQUEADA*/
+INSERT INTO ESTATUS_CAJA(NOMBRE) VALUES('HABILITADA');
+INSERT INTO ESTATUS_CAJA(NOMBRE) VALUES('DESHABILITADA');
+INSERT INTO ESTATUS_CAJA(NOMBRE) VALUES('BLOQUEADA');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
