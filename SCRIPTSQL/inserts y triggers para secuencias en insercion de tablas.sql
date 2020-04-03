@@ -650,3 +650,24 @@ INSERT INTO ESTATUS_CAJA(NOMBRE) VALUES('BLOQUEADA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*TABLA ESTATUS_CHEQUE*/
+/*SECUENCIA*/
+CREATE SEQUENCE SEQ_ESTATUS_CHEQUE
+START WITH 1
+INCREMENT BY 1;
+
+/*TRIGGER*/
+CREATE OR REPLACE TRIGGER BI_ESTATUS_CHEQUE
+BEFORE INSERT ON ESTATUS_CHEQUE
+FOR EACH ROW
+BEGIN
+SELECT SEQ_ESTATUS_CHEQUE.NEXTVAL INTO :NEW.ID_ESTATUS_CHEQUE FROM DUAL;
+END;
+
+/*INSERCIÓN DE DATOS, UNA CHEQUE PUEDE ESTAR HABILITADO, DESHABILITADO O BLOQUEADO*/
+INSERT INTO ESTATUS_CHEQUE(NOMBRE) VALUES('HABILITADO');
+INSERT INTO ESTATUS_CHEQUE(NOMBRE) VALUES('DESHABILITADO');
+INSERT INTO ESTATUS_CHEQUE(NOMBRE) VALUES('BLOQUEADO');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
