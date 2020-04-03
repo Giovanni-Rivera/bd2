@@ -608,3 +608,24 @@ INSERT INTO ESTATUS_BOLETA (NOMBRE) VALUES('BLOQUEADA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*TABLA ESTATUS_AGENCIA*/
+/*SECUENCIA*/
+CREATE SEQUENCE SEQ_ESTATUS_AGENCIA
+START WITH 1
+INCREMENT BY 1;
+
+/*TRIGGER*/
+CREATE OR REPLACE TRIGGER BI_ESTATUS_AGENCIA
+BEFORE INSERT ON ESTATUS_AGENCIA
+FOR EACH ROW
+BEGIN
+SELECT SEQ_ESTATUS_AGENCIA.NEXTVAL INTO :NEW.ID_ESTATUS FROM DUAL;
+END;
+
+/*INSERCIÓN DE DATOS, UNA AGENCIA PUEDE ESTAR HABILITADA, DESHABILITADA O BLOQUEADA*/
+INSERT INTO ESTATUS_AGENCIA(DESCRIPCION) VALUES('HABILITADA');
+INSERT INTO ESTATUS_AGENCIA(DESCRIPCION) VALUES('DESHABILITADA');
+INSERT INTO ESTATUS_AGENCIA(DESCRIPCION) VALUES('BLOQUEADA');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
