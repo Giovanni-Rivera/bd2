@@ -6,7 +6,7 @@
 VAMOS A COLOCAR SEQ_TBL_NOMBRE_TABLA*/
 
 /*PARA EL NOMBRE DE TRIGGERS
-TRIG_(ACCCION)_NOMBRE_TABLA*
+(ACCCION)_NOMBRE_TABLA*
 EN DONDE ACCION PUEDE TENER LAS SIGUIENTES VARIABLES
 BI: BEFORE INSERT;
 BU: BEFORE UPDATE;
@@ -729,6 +729,26 @@ END;
 INSERT INTO ESTATUS_BOVEDA(NOMBRE) VALUES('HABILITADA');
 INSERT INTO ESTATUS_BOVEDA(NOMBRE) VALUES('DESHABILITADA');
 INSERT INTO ESTATUS_BOVEDA(NOMBRE) VALUES('BLOQUEADA');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
+/*tabla tipo_transaccion (tipo de transacciones que se harán en la bitacora general)*/
+/*SECUENCIA*/
+CREATE SEQUENCE SEQ_TIPO_TRANSACCION
+START WITH 1
+INCREMENT BY 1;
+
+/**TRIGGER*/
+CREATE OR REPLACE TRIGGER BI_TIPO_TRANSACCION_GENERAL 
+BEFORE INSERT ON TIPO_TRANSACCION
+FOR EACH ROW
+BEGIN
+SELECT SEQ_TIPO_TRANSACCION.NEXTVAL INTO :NEW.ID_TIPO_TRANSACCION FROM DUAL;
+END;
+
+/*VAMOS A REGISTRAR TODOS LOS DEPOSITOS Y RETIROS DE LAS DIFERENTES CUENTAS, Y DEMÁS TRANSAACCIONES*/
+INSERT INTO TIPO_TRANSACCION(NOMBRE) VALUES('DEPOSITO');
+INSERT INTO TIPO_TRANSACCION(NOMBRE) VALUES('RETIRO');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
