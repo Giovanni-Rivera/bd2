@@ -6,7 +6,18 @@
 VAMOS A COLOCAR SEQ_TBL_NOMBRE_TABLA*/
 
 /*PARA EL NOMBRE DE TRIGGERS
-TRIG_(BI,AU,INST)_NOMBRE_TABLA*/
+TRIG_(ACCCION)_NOMBRE_TABLA*
+EN DONDE ACCION PUEDE TENER LAS SIGUIENTES VARIABLES
+BI: BEFORE INSERT;
+BU: BEFORE UPDATE;
+AI: AFTER INSERT;
+AU: AFTER UPDATE;
+BD: BEFORE DELETE;
+AD: AFTER DELETE;
+INST: INSTEAD OF;
+
+
+*/
 
 /***********************************************************************************************/
 
@@ -558,3 +569,24 @@ INSERT INTO TIPO_CUENTA (NOMBRE) VALUES('DE AHORRO');
 
 /***********************************************************************************************/
 /*tabla TIPO_BOLETA*/
+CREATE SEQUENCE SEQ_TIPO_BOLETA
+START WITH 1
+INCREMENT BY 1;
+
+/*TRIGGER PARA PRIMARY KEY AUTOINCREMENTABLE*/
+CREATE OR REPLACE TRIGGER BI_TIPO_BOLETA
+BEFORE INSERT ON TIPO_BOLETA
+FOR EACH ROW
+BEGIN
+SELECT SEQ_TIPO_BOLETA.NEXTVAL INTO :NEW.ID_TIPO_BOLETA FROM DUAL;
+END;
+
+/*INSERTS DE DATOS*/
+INSERT INTO TIPO_BOLETA (NOMBRE) VALUES('DEPOSITO CUENTA AHORRO');
+INSERT INTO TIPO_BOLETA (NOMBRE) VALUES('DEPOSITO CUENTA MONETARIA');
+INSERT INTO TIPO_BOLETA (NOMBRE) VALUES('RETIRO CUENTA DE AHORRO');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
+/*tabla */
+
