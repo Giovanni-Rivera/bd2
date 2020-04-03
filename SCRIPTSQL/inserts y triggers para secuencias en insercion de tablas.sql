@@ -495,3 +495,25 @@ INSERT INTO TIPO_TRANSACCION_BOVEDA (DESCRIPCION) VALUES('DEPÓSITO');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
+/*TABLA ESTATUS_CHEQUERA*/
+/*SECUENCIA*/
+CREATE SEQUENCE SEQ_ESTATUS_CHEQUERA
+START WITH 1
+INCREMENT BY 1;
+
+/*TRIGGER PARA HACER EL CAMPO AUTOINCREMENTABLE (ID_ESTATUS_CUENTA), UNA 
+CHEQUERA PUEDE ESTAR HABILITADA, DESHABILITADA O BLOQUEADA*/
+CREATE OR REPLACE TRIGGER BI_TBL_ESTATUS_CHEQUERA
+BEFORE INSERT ON ESTATUS_CHEQUERA
+FOR EACH ROW
+BEGIN
+SELECT SEQ_ESTATUS_CHEQUERA.NEXTVAL INTO :NEW.ID_ESTATUS_CHEQUERA FROM DUAL;
+END;
+
+/*INSECIÓN DE DATOS*/
+INSERT INTO ESTATUS_CHEQUERA(NOMBRE) VALUES('HABILITADA');
+INSERT INTO ESTATUS_CHEQUERA(NOMBRE) VALUES('DESHABILITADA');
+INSERT INTO ESTATUS_CHEQUERA(NOMBRE) VALUES('BLOQUEADA');
+/***********************************************************************************************/
+
+/***********************************************************************************************/
