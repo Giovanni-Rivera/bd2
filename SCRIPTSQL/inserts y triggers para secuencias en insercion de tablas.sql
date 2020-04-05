@@ -563,8 +563,8 @@ SELECT SEQ_TIPO_CUENTA.NEXTVAL INTO :NEW.ID_TIPO_CUENTA FROM DUAL;
 END;
 
 /*SEGÚN LO REQUERIDO EN EL PROYECTO, LOS TIPOS DE CUENTA SON MONETARIA Y DE AHORRO*/
-INSERT INTO TIPO_CUENTA (NOMBRE) VALUES('MONETARIA');
 INSERT INTO TIPO_CUENTA (NOMBRE) VALUES('DE AHORRO');
+INSERT INTO TIPO_CUENTA (NOMBRE) VALUES('MONETARIA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
