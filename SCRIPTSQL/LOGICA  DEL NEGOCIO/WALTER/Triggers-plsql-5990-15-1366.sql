@@ -111,6 +111,7 @@ END BI_BITACORA_CLIENTE;
 /
 
 /* 5.- después de insertar datos en la tabla cliente debemos registrarlos en bitacora cliente (la inserción)*/
+/* 5.- después de insertar datos en la tabla cliente debemos registrarlos en bitacora cliente (la inserción)*/
 CREATE OR REPLACE TRIGGER AIUD_TBL_CLIENTE
 AFTER INSERT OR UPDATE OR DELETE  ON CLIENTE
 FOR EACH ROW
