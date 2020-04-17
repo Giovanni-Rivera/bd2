@@ -649,3 +649,17 @@ REFERENCES TABLA_CONFIGURACION(ID_TABLA);
 
 
 
+/*esta tabla modulo_tipo_usuario, nos servirá para relacionar los módulos a los que tendrá acceso un usuario
+según su tipo de usuario, ya que un usuario puede tener acceso a 1 o más módulos y un módulo puede ser
+accedido por uno o más usuarios según su tipo a la vez */
+CREATE TABLE MODULO_TIPO_USUARIO(
+ID_TIPO_USUARIO NUMBER(3),
+ID_MODULO NUMBER(3)
+);
+ALTER TABLE MODULO_TIPO_USUARIO ADD CONSTRAINT PK_ID_MOD_TPUSR PRIMARY KEY (ID_TIPO_USUARIO,ID_MODULO);
+ALTER TABLE MODULO_TIPO_USUARIO ADD CONSTRAINT FK_ID_TP_SR FOREIGN KEY(ID_TIPO_USUARIO) REFERENCES TIPO_USUARIO(ID_TIPO_USUARIO);
+ALTER TABLE MODULO_TIPO_USUARIO ADD CONSTRAINT FK_ID_MODL FOREIGN KEY (ID_MODULO) REFERENCES MODULO(ID_MODULO) ;
+
+
+
+
