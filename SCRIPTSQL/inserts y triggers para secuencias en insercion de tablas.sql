@@ -16,19 +16,29 @@ BD: BEFORE DELETE;
 AD: AFTER DELETE;
 INST: INSTEAD OF;
 
+NOMBRES DE PROCEDIMIENTOS ALMACENADOS:
+PROC_NOMBRE
+
+
+AL CONTAR CON LA VERSIÓN 11G DE ORACLE, EN ESTA NO SE PODÍA GENERAR UN CAMPO AUTOINCREMENTABLE
+A UNA TABLA DE FORMA AUTOMÁTICA, POR ELLO SE RECURRIÓ AL USO DE SECUENCIAS Y  TRIGGERS PARA SU MANEJO.
+
 
 */
 
 /***********************************************************************************************/
 
 /*tabla configuracion*/
+/*EN ESTA TABLA SE PRETENDE LLEVAR EL CONTROL DE LOS MOVIMIENTOS QUE HAGA EL ADMINISTRADOR DEL SISTEMA
+ES DECIR, SI AGREGA O MODIFICA DATOS EN LAS TABLAS LAS CUALES EN ESTE CASO, SON EL NOMBRE DE LOS CAMPOS
+QUE ESTAMOS INSERTANDO*/
 /*creando la secuencia correspondiente*/
 CREATE SEQUENCE SEQ_TBL_TBLCONFIG
 START WITH 1
 INCREMENT BY 1;
 COMMIT;
 
-
+/*ESTE TRIGGER ASIGNA A*/
 CREATE OR REPLACE TRIGGER BI_TBL_TBLCONFIG
 BEFORE INSERT ON TABLA_CONFIGURACION
 FOR EACH ROW
@@ -72,7 +82,11 @@ INSERT INTO TABLA_CONFIGURACION(NOMBRE) VALUES('MUNICIPIO');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
-/*TABLE CAMPO_BITACORA_CONFIGURACION*/
+/*TABLE CAMPO_BITACORA_CONFIGURACION*
+En esta tabla se están guardando los valores relacioandos a los nombres de los campos en las tablas que 
+se incluyeron también como campos pero en la tabla tabla_configuración, pues se pretende que en la bitácora 
+general de esto se lleve el control de la inserción o modificación de campos
+*/
 /*creando la secuencia correspondiente*/
 CREATE SEQUENCE SEQ_TBL_CMPBIT_CONF
 START WITH 1
@@ -171,8 +185,6 @@ INSERT INTO ESTATUS_CLIENTE (NOMBRE) VALUES('INACTIVO');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
-
-
 /*TABLA TIPO_OPERACION_CONFIGURACION*/
 
 CREATE SEQUENCE TBL_TP_OPR_CONFIG
@@ -217,7 +229,12 @@ INSERT INTO TIPO_OPERACION_EMPRESA (DESCRIPCION) VALUES('BAJA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
-/*tabla campo BITACORA empresa*/
+/*tabla campo BITACORA empresa
+ACÁ CUANDO SE DISPARE EL OTRO RIGGER QUE REGISTRE EL MOVIMIENTO (YA SEA UNA INSECIÓN )
+O MODIFICACIÓN DE UN CAMPO DE LA TABLA EMPRESA, ESTE ID NOS SERVIRÁ PARA IDENTIFICAR CUAL CAMPO
+FUE EL QUE SE AFECTÓ POR UNA ACTUALIZACIÓN, EN LA INSERCIÓN SOLO SE REGISTRÁ A NULL, PUES SE ESTÁN
+CREANDO TODOS LOS CAMPOS ASOCIADOS A ESE MOVIMIENTO.
+*/
 
 /*creamos la secuencia*/
 CREATE SEQUENCE SEQ_TBLCMP_BIT_EMPRESA
@@ -269,7 +286,10 @@ INSERT INTO ESTATUS_EMPRESA (NOMBRE) VALUES('INACTIVA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
-/*tabla campo_bitacora_usuario*/
+/*tabla campo_bitacora_usuario
+CON LA CREACIÓN DE ESTA TABLA, SE INGRESARÁ EL ID DE ESTE CAMPO QUE SEA GENERADO LUEGO DE SU INSERCIÓN
+EN LA BITACORA_USUARIO, PARA IDENTIFICAR CUAL CAMPO SERÁ EL AFECTADO POR ALGUNA OPERACIÓN DE UDPATE Y UNA TUPLA COMPLETA
+EN EL CASO DE UN INSERT*/
 
 CREATE SEQUENCE SEQ_TBL_BIT_USR
 START  WITH 1
@@ -307,7 +327,9 @@ INSERT INTO CAMPO_BITACORA_USUARIO (NOMBRE_CAMPO) VALUES('ESTATUS_USUARIO');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
-/*tabla tipo_operacion_usuario*/
+/*tabla tipo_operacion_usuario*
+REGISTRAR SEGÚN EL TIPO DE MOVIMIENTO QUE QUIERA HACER EL USUARIO, SI SE INSERTA UNA TUPLA,
+SI SE MODIFICA ALGÚN CAMPO, O SI SE DÁ DE BAJA(NO SE BORRA, SOLO SE OCULTA A OJOS DEL USUARIO)*/
 CREATE SEQUENCE SQL_TBL_TPOPR_USR
 START WITH 1
 INCREMENT BY 1;
@@ -347,12 +369,14 @@ INSERT INTO PAIS(NOMBRE) VALUES('GUATEMALA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
-/*tabla  TIPO_TRR_BITACORA_LIBRETA*/
+/*tabla  TIPO_TRR_BITACORA_LIBRETA
+EN ESTA TABLA SE PRETENDE LLEVAR EL CONTROL DEL TIPO DE MOVIMIENTO EN UNA LIBRETA RESPECTO A LOS DATOS
+SI ESTOS FUERON INSERTADOS, MODIFICADOS O DADOS DE BAJA
 CREATE SEQUENCE SEQ_TBL_TRR_BIT_LIB
 START WITH 1
 INCREMENT BY 1;
 
-/*TRIGGER*/
+/*TRIGGER PARA LOGRAR QUE EL ID EN ESTA TABLA SEA AUTOINCREMENTABLE*/
 CREATE OR REPLACE TRIGGER BI_TP_TRBIT_LIBRETA
 BEFORE INSERT ON TIPO_TRR_BITACORA_LIBRETA
 FOR EACH ROW
@@ -372,7 +396,7 @@ CREATE SEQUENCE SEQ_ESTATUS_USR
 START WITH 1
 INCREMENT BY 1;
 
-/*TIGRILLO*/
+/*TRIGGER PARA QUE AL INSERTAR EL VALOR DEL ESTATUS DEL USUARIO PUEDA SER AUTOINC*/
 CREATE OR REPLACE TRIGGER BI_ESTATUS_USUARIO
 BEFORE INSERT ON ESTATUS_USUARIO
 FOR EACH ROW
@@ -594,7 +618,8 @@ CREATE SEQUENCE SEQ_TIPO_CUENTA
 START WITH 1
 INCREMENT BY 1;
 
-/*TRIGGER*/
+/*TRIGGER PARA HACER EL ID_TIPO_CUENTA AUTOINCREMENTABLE CADA VEZ 
+QUE SE INSERTE UNA TUPLA EN LA TABLA TIPO_CUENTA*/
 CREATE OR REPLACE TRIGGER BI_TIPO_CUENTA
 BEFORE INSERT ON TIPO_CUENTA
 FOR EACH ROW
@@ -904,7 +929,7 @@ END;
 /
 /*INSERCION DE DATOS
 NO SE COLOCAN LOS CAMPOS FECHA_CREACION Y FECHA_CANCELACION
-PORQUE POR NORMAS DE SEGURIDAD NO DEBEN ESTAR HABILITADOS
+DEBIDO A NORMAS DE SEGURIDAD NO DEBEN ESTAR HABILITADOS PARA SER MODIFICABLES
 PARA QUE SE LES HAGAN CAMBIOS*/
 INSERT INTO CAMPO_BITACORA_AGENCIA (NOMBRE_CAMPO) VALUES('ID_AGENCIA');
 INSERT INTO CAMPO_BITACORA_AGENCIA (NOMBRE_CAMPO) VALUES('NOMBRE');
@@ -947,4 +972,7 @@ INSERT INTO TIPO_USUARIO (DESCRIPCION) VALUES('SERVICIO AL CLIENTE');
 INSERT INTO TIPO_USUARIO (DESCRIPCION) VALUES('GERENTE DE AGENCIA');
 INSERT INTO TIPO_USUARIO (DESCRIPCION) VALUES('TIPO_ESTATUS');
 
-
+/***********************************************************************************************/
+    ------------FINAL DE LOS PRINCIPALES TRIGGERS, SECUENCIAS Y DATOS NECESARIOS ----------------
+    ------------PREVIO A LA IMPLEMENTACION COMPLETA DE LA LÓGICA DEL NEGOCIO---------------------
+/***********************************************************************************************/
