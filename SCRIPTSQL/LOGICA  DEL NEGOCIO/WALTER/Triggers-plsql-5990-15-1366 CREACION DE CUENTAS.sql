@@ -806,3 +806,55 @@ END PROC_ACTUALIZAR_ASOC_CUENTA;
 /
 
 
+
+
+/**------------------------------------------------------------------------------------/
+/----------*TRIGGERS PARA LA CREACION DE LOG EN BITACORA CLIENTE_ASOCIADO_CUENTA*/
+CREATE OR REPLACE TRIGGER AIUD_TBL_CL_ASOC_CUENTA
+AFTER INSERT OR UPDATE OR DELETE  ON CLIENTE_ASOCIADO_CUENTA
+FOR EACH ROW
+DECLARE
+/*VARIABLE PARA HACER UNA VALIDACIOÓN SI EL USUARIO LOEGUEADO
+ EXISTE*/
+EXISTE_USUARIO NUMBER:=0;
+BEGIN
+    /*Validamos que el usuario de la base de datos exista dentro nuestros registros en la tabla usuario*/
+    SELECT ID_USUARIO INTO EXISTE_USUARIO FROM USUARIO WHERE NOMBRE_USUARIO=USER;
+    IF (EXISTE_USUARIO>0)THEN
+        /*después de insertar en la tabla cliente, insertamos en nustro log (bitacora_cliente)
+        en este caso solo vamos a registrar la opeacioón como tal (inserción) ya que cuando actualice
+        unta tupla completa o campo, lo vamos registrar y podremos saber el valor anterior y nuevo del campo que se afectado*/
+            IF INSERTING THEN
+                INSERT INTO BITACORA_ASOC_CUENTA(FECHA_OPERACION,VALOR_ANTIGUO, VALOR_NUEVO,CAMPO_AFECTADO,ID_CLIENTE,ID_USUARIO,ID_TIPO_OPERACION)
+                VALUES(SYSDATE,NULL,NULL,NULL,:NEW.ID_CLIENTE,EXISTE_USUARIO,2);
+            END IF;
+            IF UPDATING ('ID_CLIENTE') THEN
+                INSERT INTO BITACORA_ASOC_CUENTA(FECHA_OPERACION,VALOR_ANTIGUO, VALOR_NUEVO,CAMPO_AFECTADO,ID_CLIENTE,ID_USUARIO,ID_TIPO_OPERACION)
+                VALUES(SYSDATE,:OLD.ID_CLIENTE,:NEW.ID_CLIENTE,1,:NEW.ID_CLIENTE,EXISTE_USUARIO,1);
+            END IF; 
+              IF UPDATING ('ID_CUENTA') THEN
+                INSERT INTO BITACORA_ASOC_CUENTA(FECHA_OPERACION,VALOR_ANTIGUO, VALOR_NUEVO,CAMPO_AFECTADO,ID_CLIENTE,ID_USUARIO,ID_TIPO_OPERACION)
+                VALUES(SYSDATE,:OLD.ID_CUENTA,:NEW.ID_CUENTA,2,:NEW.ID_CLIENTE,EXISTE_USUARIO,1);
+            END IF; 
+              IF UPDATING ('ID_EMPRESA') THEN
+                INSERT INTO BITACORA_ASOC_CUENTA(FECHA_OPERACION,VALOR_ANTIGUO, VALOR_NUEVO,CAMPO_AFECTADO,ID_CLIENTE,ID_USUARIO,ID_TIPO_OPERACION)
+                VALUES(SYSDATE,:OLD.ID_EMPRESA,:NEW.ID_EMPRESA,3,:NEW.ID_CLIENTE,EXISTE_USUARIO,1);
+            END IF; 
+
+                
+    END IF;
+    EXCEPTION
+    /*si por algún motivo falla alguna conversión de un número*/
+    WHEN INVALID_NUMBER THEN
+        DBMS_OUTPUT.PUT_LINE(SQLCODE||'  FALLÓ LA CONVERSIÓN DE:    '||SQLERRM);
+    /*si el usuario quiere insertar un valor con un id de la tabla  ya  creado*/
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('ESTÁ INTENTANDO REGISTRAR CON UN ID YA EXISTENTE, COMUNIQUESE CON EL DBA');
+    /*si el  usuario no está registrado dentro de la base de datos*/
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('USTED NO TIENE PRIVILEGIOS O PERMISOS PARA CREAR ESTA OPERACION, CONTACTE CON EL DBA');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE(SQLCODE||'    ERROR:     '||'MENSAJE    '||SQLERRM);
+END AIUD_TBL_CL_ASOC_CUENTA;
+/
+COMMIT;
