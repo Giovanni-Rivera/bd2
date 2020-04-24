@@ -651,7 +651,7 @@ END;
 INSERT INTO TIPO_BOLETA (NOMBRE) VALUES('DEPOSITO_CUENTA_AHORRO');
 INSERT INTO TIPO_BOLETA (NOMBRE) VALUES('DEPOSITO_CUENTA_MONETARIA');
 INSERT INTO TIPO_BOLETA (NOMBRE) VALUES('RETIRO_CUENTA_AHORRO');
-INSERT INTO TIPO_BOLETA (NOMBRE) VALUES('RETIRO_CUENTA_MONETARIA')
+INSERT INTO TIPO_BOLETA (NOMBRE) VALUES('RETIRO_CUENTA_MONETARIA');
 /***********************************************************************************************/
 
 /***********************************************************************************************/
