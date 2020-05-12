@@ -100,6 +100,7 @@ INSERT INTO ESTATUS_BOLETA (NOMBRE) VALUES('NO_OPERADA');
     /*1.- depositos a cuenta de ahorro*/
     /*2.- depositos a cuenta monetaria*/
     /*3.- retiro a cuenta de ahorro*/
+    /*4.- RETIRO DE CUENTA MONETARIA (CHEQUE) */
     
 
 /*VAMOS A CREAR UN STORED PROCEDURE PARA CREAR LA BOLETA, SE ASUME QUE
@@ -227,6 +228,7 @@ DATOS_BOLETA.ID_CUENTA:='1-1-64-5';
 DATOS_BOLETA.TIPO_BOLETA:=1;
 PROC_CREAR_BOLETA(DATOS_BOLETA);
 END;
+
 
 
 
