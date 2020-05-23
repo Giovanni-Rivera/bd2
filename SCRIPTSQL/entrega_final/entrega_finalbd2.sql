@@ -385,3 +385,102 @@ end;
 SELECT * FROM BITACORA_TRANSACCION order by no_transaccion desc;
 
 
+
+
+/*-------------------------------------REPORTERÍA------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------------------------------------------*/
+
+
+
+/*REPORTERÍA*/
+
+/*1- REPORTE DE ESTADOS DE CUENTA CON RANGO DE FECHAS Y CUENTA*/
+
+
+CREATE OR REPLACE PROCEDURE REPORTE_ESTADO_CUENTA(FECHA_INICIAL VARCHAR2, FECHA_FINAL VARCHAR2, NUMERO_CUENTA VARCHAR2)
+IS
+/*PARA GUARDAR SI EXISTE LA FUNCION*/
+EXISTE_CUENTA_N NUMBER;
+
+/*EXCEPCION PERSONALIZADA POR SI LA CUENTA NO EXISTE */
+NO_EXISTE_CUENTA EXCEPTION;
+
+/*CURSOR PARA EXTRAER DATOS ACORDE A LA CUENTA*/
+    CURSOR VER_CUENTAS IS 
+     SELECT ID_CUENTA, MONTO, SALDO_ANTERIOR, SALDO_NUEVO, FECHA,et.descripcion,ttrs.nombre  
+     FROM BITACORA_TRANSACCION BT
+     INNER JOIN TIPO_TRANSACCION TTRS
+     ON 
+     ttrs.id_tipo_transaccion=BT.ID_TIPO
+     INNER JOIN ESTADO_TRANSACCION_GEN ET
+     on
+     et.id_estado=bt.id_estado
+     WHERE BT.ID_CUENTA=NUMERO_CUENTA order by no_transaccion desc;
+    
+/*PARA ALMACENAR LAS FECHAS*/ 
+INICIO DATE;
+FIN DATE;
+
+BEGIN
+
+SELECT FUNCT_EXISTE_CUENTA(NUMERO_CUENTA)INTO EXISTE_CUENTA_N FROM DUAL;
+
+IF(EXISTE_CUENTA_N<>0) THEN
+/*CONVERTIR LAS FECHAS QUE ENVÍAN EN FORMATO STRING A FORMATO DATE*/
+ SELECT TO_DATE(FECHA_INICIAL,'DD/MM/YYYY')INTO INICIO FROM DUAL;
+ SELECT TO_DATE(FECHA_FINAL,'DD/MM/YYYY')INTO FIN FROM DUAL;      
+
+
+    DBMS_OUTPUT.PUT_LINE('ID_CUENTA'||'                           '||'MONTO_DISPONIBLE'||'                               '||'SALDO_ANTERIOR'||'            '||'SALDO_NUEVO'
+    ||'                    '||'FECHA'||'                  '||'ESTADO_OPERACION'||'                  '||'TIPO_OPERACION');
+
+    FOR I IN VER_CUENTAS LOOP
+    IF( TO_DATE(trunc(i.FECHA,'dd'),'DD/MM/YYYY') BETWEEN INICIO AND FIN AND VER_CUENTAS%ROWCOUNT<>0) THEN
+        DBMS_OUTPUT.PUT_LINE(I.ID_CUENTA||'                              '||I.MONTO||'                                        '||I.SALDO_ANTERIOR||'                      '||I.SALDO_NUEVO
+    ||'                  '||TO_DATE(trunc(i.FECHA,'dd'),'DD/MM/YYYY')||'                      '||I.descripcion||'                                '||I.NOMBRE);
+    ELSE
+    RAISE_APPLICATION_ERROR(-20012,'NO EXISTE DATOS CON EL RANGO DE FECHA PROPORCIONADO ');
+    END IF;
+    END LOOP;
+ELSE 
+RAISE NO_EXISTE_CUENTA;
+END IF;
+COMMIT;
+EXCEPTION 
+WHEN NO_EXISTE_CUENTA THEN
+DBMS_OUTPUT.PUT_LINE('NO EXISTE LA CUENTA ESTÚPIDO');
+WHEN NO_DATA_FOUND THEN
+DBMS_OUTPUT.PUT_LINE('NO HAY DATOS');
+END;
+
+
+SET SERVEROUTPUT ON;
+
+
+BEGIN 
+REPORTE_ESTADO_CUENTA('01/04/20', '22/05/20', '2-2-221-2');
+END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
