@@ -463,6 +463,64 @@ REPORTE_ESTADO_CUENTA('01/04/20', '22/05/20', '2-2-221-2');
 END;
 
 
+/*------------------------------------------------------------------------------*/
+
+
+/*2- REPORTE resumen de cuentas por agencia*/
+
+
+CREATE OR REPLACE PROCEDURE REPORTE_RESUMEN_CUENTAS(NUMERO_AGENCIA NUMBER)
+IS
+
+CURSOR LISTADO IS 
+        SELECT CUENTA.ID_CUENTA, tipo_cuenta.nombre AS TIPO_CUENTA,CLIENTE.NOMBRES||CLIENTE.APELLIDOS AS NOMBRE_CUENTA,
+        estatus_cuenta.nombre AS ESTADO_CUENTA,fecha_creacion, 
+        cuenta.monto_disponible,CUENTA.SALDO_EN_RESERVA FROM CUENTA 
+        INNER JOIN CLIENTE_ASOCIADO_CUENTA 
+        ON cuenta.id_cuenta=cliente_asociado_cuenta.id_cuenta
+        INNER JOIN CLIENTE
+        ON CLIENTE.ID_CLIENTE_NUMERO = CLIENTE_ASOCIADO_CUENTA.ID_CLIENTE
+        INNER JOIN TIPO_CUENTA
+        ON cuenta.id_tipo=TIPO_CUENTA.ID_TIPO_CUENTA
+        INNER JOIN ESTATUS_CUENTA
+        ON estatus_cuenta.id_estatus_cuenta=CUENTA.ID_ESTATUS
+            WHERE ID_AGENCIA_APERTURA = NUMERO_AGENCIA ORDER BY FECHA_CREACION ASC;
+EXISTE_AGENCIA NUMBER;
+NO_EXISTE_AGENCIA EXCEPTION;
+BEGIN
+SELECT COUNT(*) INTO EXISTE_AGENCIA FROM AGENCIA WHERE agencia.id_agencia=NUMERO_AGENCIA;
+    IF(EXISTE_AGENCIA=1) THEN
+        DBMS_OUTPUT.PUT_LINE('ID_CUENTA'||'                           '||'TIPO_CUENTA'||'                               '||'NOMBRE_CUENTA'||
+        '                    '||'ESTATUS_CUENTA'
+    ||'                    '||'FECHA_APERTURA'||'                  '||'MONTO_DISPONIBLE'||'                  '||'SALDO_RESERVA');
+
+        FOR I IN LISTADO
+        LOOP
+          DBMS_OUTPUT.PUT_LINE(I.ID_CUENTA||'                           '||I.TIPO_CUENTA||'                               '||I.NOMBRE_CUENTA||
+        '                     '||I.ESTADO_CUENTA
+    ||'                            '||TO_DATE(TRUNC(I.FECHA_CREACION,'DD'),'DD/MM/YYYY')||'                         '||I.MONTO_DISPONIBLE||'                  '||I.SALDO_EN_RESERVA||'         ');
+
+        END LOOP;
+    ELSE
+    RAISE NO_EXISTE_AGENCIA;
+    END IF;
+COMMIT;
+EXCEPTION 
+WHEN NO_EXISTE_AGENCIA THEN
+DBMS_OUTPUT.PUT_LINE('EL NUMERO DE AGENCIA QUE INGRESÓ NO EXISTE');
+WHEN INVALID_NUMBER THEN
+DBMS_OUTPUT.PUT_LINE('DEBE INGRESAR UN NUMERO');
+WHEN NO_DATA_FOUND THEN
+DBMS_OUTPUT.PUT_LINE('NO HAY DATOS');
+END;
+
+
+SET SERVEROUTPUT ON;
+
+
+BEGIN 
+REPORTE_RESUMEN_CUENTAS(2);
+END;
 
 
 
