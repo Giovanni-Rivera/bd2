@@ -432,7 +432,7 @@ IF(EXISTE_CUENTA_N<>0) THEN
  SELECT TO_DATE(FECHA_FINAL,'DD/MM/YYYY')INTO FIN FROM DUAL;      
 
 
-    DBMS_OUTPUT.PUT_LINE('ID_CUENTA'||'                           '||'MONTO_DISPONIBLE'||'                               '||'SALDO_ANTERIOR'||'            '||'SALDO_NUEVO'
+    DBMS_OUTPUT.PUT_LINE('ID_CUENTA'||'                           '||'MONTO'||'                               '||'SALDO_ANTERIOR'||'            '||'SALDO_NUEVO'
     ||'                    '||'FECHA'||'                  '||'ESTADO_OPERACION'||'                  '||'TIPO_OPERACION');
 
     FOR I IN VER_CUENTAS LOOP
@@ -449,7 +449,7 @@ END IF;
 COMMIT;
 EXCEPTION 
 WHEN NO_EXISTE_CUENTA THEN
-DBMS_OUTPUT.PUT_LINE('NO EXISTE LA CUENTA ESTÚPIDO');
+DBMS_OUTPUT.PUT_LINE('NO EXISTE LA CUENTA');
 WHEN NO_DATA_FOUND THEN
 DBMS_OUTPUT.PUT_LINE('NO HAY DATOS');
 END;
@@ -523,10 +523,105 @@ REPORTE_RESUMEN_CUENTAS(2);
 END;
 
 
+/**--------------------------------------------------------------------------------------------------------------------------*/
+
+/**--------------------------------------------------------------------------------------------------------------------------*/
+/*ESTADÍSTICAS POR AGENCIA*/
+
+
+CREATE OR REPLACE PROCEDURE PROC_ESTADISTICA_AGENCIA(FECHA_INICIAL VARCHAR2,FECHA_FINAL VARCHAR2, ID_AGENCIA1 NUMBER)
+IS
+CURSOR VER_AGENCIA IS
+SELECT ag.id_agencia,TP.NOMBRE AS OPERACION,
+TO_DATE(TRUNC(BT.FECHA,'dd'),'DD/MM/YYYY')FECHA_OPERACION,COUNT(TP.NOMBRE)TOTAL_OPERACIONES,
+SUM(BT.MONTO) AS TOTAL  FROM BITACORA_TRANSACCION BT
+INNER JOIN TIPO_TRANSACCION TP
+ON TP.ID_TIPO_TRANSACCION = BT.ID_TIPO
+INNER JOIN CAJA CJ
+ON 
+BT.ID_CAJA=cj.id_caja
+INNER JOIN
+AGENCIA AG
+ON ag.id_agencia=cj.id_agencia
+where ag.id_agencia=ID_AGENCIA1
+GROUP BY  ag.id_agencia,TP.NOMBRE,
+TO_DATE(TRUNC(BT.FECHA,'dd'),'DD/MM/YYYY');
+/*VALIDAR SI EXISTE LA AGENCIA*/
+NO_EXISTE_AGENCIA EXCEPTION;
+
+/*variable para VER SI EXISTE LA AGENCIA */
+EXISTE_AGENCIA NUMBER;
+
+/*PARA ALMACENAR LAS FECHAS*/ 
+INICIO DATE;
+FIN DATE;
+BEGIN
+
+/*PRIMERO VALIDAMOS SI EXSTE LA AGENCIA*/
+SELECT FUNCT_EXISTE_AGENCIA(ID_AGENCIA1)INTO EXISTE_AGENCIA FROM DUAL;
+
+IF(EXISTE_AGENCIA<>0) THEN
+    /*CONVERTIR LAS FECHAS QUE ENVÍAN EN FORMATO STRING A FORMATO DATE*/
+         SELECT TO_DATE(FECHA_INICIAL,'DD/MM/YYYY')INTO INICIO FROM DUAL;
+         SELECT TO_DATE(FECHA_FINAL,'DD/MM/YYYY')INTO FIN FROM DUAL;  
+
+    /*encabezado del reporte*/
+     DBMS_OUTPUT.PUT_LINE('ID_AGENCIA'||'                              '||'OPERACION'||
+            '                                        '||'FECHA_OPERACION'||'                      '
+            ||'TOTAL_OPERACIONES'
+            ||'                                             '||'TOTAL');
+    FOR I IN VER_AGENCIA 
+        LOOP
+            IF( TO_DATE(trunc(i.FECHA_OPERACION,'dd'),'DD/MM/YYYY') BETWEEN INICIO AND FIN AND VER_AGENCIA%ROWCOUNT<>0) THEN
+                DBMS_OUTPUT.PUT_LINE(I.ID_AGENCIA||'                              '||I.OPERACION||
+                '                                                       '||I.FECHA_OPERACION||'                                           '
+                ||I.TOTAL_OPERACIONES
+                ||'                                                              '||I.TOTAL);
+            ELSE
+                RAISE_APPLICATION_ERROR(-20013,'NO EXISTE DATOS CON EL RANGO DE FECHA PROPORCIONADO ');
+            END IF;
+        END LOOP;
+ELSE
+ RAISE NO_EXISTE_AGENCIA;
+END IF;
+COMMIT;
+EXCEPTION 
+    WHEN INVALID_NUMBER THEN
+         DBMS_OUTPUT.PUT_LINE('ESTÀ INGRESANDO UN FORMATO INCORRECTO EN EL CAMPO NUMERO DE AGENCIA');
+    WHEN NO_EXISTE_AGENCIA THEN
+        DBMS_OUTPUT.PUT_LINE('NO EXISTE EL NUMERO DE AGENCIA');
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('NO HAY DATOS');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE(SQLCODE||'ERROR:    '||SQLERRM||'   COMUNIQUESE CON EL DBA');
+ROLLBACK;
+END PROC_ESTADISTICA_AGENCIA;
+
+commit;
+set serveroutput on;
 
 
 
+/*funcion para validar si existe una agencia*/
+create or replace FUNCTION FUNCT_EXISTE_AGENCIA(NUMERO_AGENCIA NUMBER)
+RETURN NUMBER
+IS
+CUENTA_NUMERO NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO CUENTA_NUMERO FROM AGENCIA WHERE AGENCIA.ID_AGENCIA=NUMERO_AGENCIA;
+    IF(CUENTA_NUMERO=1) THEN
+        RETURN 1;
 
+    ELSE
+        RETURN 0;
+    END IF; 
+END;
+
+
+/*BLOQUE ANÓNIMO*/
+BEGIN
+PROC_ESTADISTICA_AGENCIA('01/04/20','26/05/20',1);
+END;
 
 
 
